@@ -1,0 +1,165 @@
+'''
+Rachael Wang
+Assignment 13
+Query World DB
+
+Analysis:
+Modify WorldDBOO to have the user provide min and max populations instead
+of a city name; have the query select the city along with its population and
+have each city/population pair be displayed in descending order by population.
+(This program finds the population of a city via database query)
+
+-----------------------------------------------------------------------
+
+Output:
+  query result (str) - Values retrieved from the database
+Input:
+  popMin (str) - Population minimum inputted by user
+  popMax (str) - Population maximum inputted by user
+
+-----------------------------------------------------------------------
+
+Classes:
+
+  BadArgument - Exception class that signals when a query should not be issued
+  -- getTitle() - returns title of the BadArgument class
+  -- __str__ - returns message of the BadArgument class
+
+  QueryWorldDB - Encapsulates a population query sent to WorldDB (database)
+  -- isValidRange() - Checks if the maximum and minimum inputted by the user
+         is an integer and if the minimum is <= to the maximum
+  -- getAnswer() - Accessor method that get's the answer
+  -- setCity() - Set's the city name
+  -- setPops() - Set's the minimum and maximum population values
+  -- setAnswer() - Set's the answer; if the city isn't in the database,
+         answer will be None. Otherwise, city will be a tuple object
+  -- cityQuery() - Raises BadArgument exception if population value is invalid
+  -- closeConnection() - Closes connection to the database
+  
+'''
+
+import sqlite3
+
+'''
+BadArgument
+User defined exception class (subclass of Exception) used to signal program
+that a query should not be issued
+'''
+
+class BadArgument(Exception):
+  
+  def __init__(self):
+    self.__title = 'Bad Argument'
+    self.__message = 'The population values you entered are invalid'
+
+  def getTitle(self):
+    return self.__title
+
+  def __str__(self):
+    return self.__message
+
+'''
+QueryWorldDB
+Encapsulates a population query sent to world database
+'''
+
+class QueryWorldDB:
+
+  # Connects to database and gets cursor
+
+  def __init__(self, dBName):
+    conn = sqlite3.connect(dBName)
+    self.__cursor = conn.cursor()
+
+    self.__minValue = ''
+    self.__maxValue = ''
+    self.__answer = None
+
+  def isValidRange(self, minValue, maxValue):
+    return minValue.isdigit() and maxValue.isdigit() and int(minValue) <= int(maxValue)
+
+  def getAnswer(self):
+    return self.__answer
+
+  def setCity(self, cityName):
+    self.__currentCity = cityName
+
+  def setPops(self, minPop, maxPop):
+    self.__minValue = minPop
+    self.__maxValue = maxPop
+
+  # If the city isn't in the database, then answer will be None
+  # If city is in database, answer will be a tuple object
+
+  def setAnswer(self):
+    result = self.__cursor.fetchall()
+    self.__answer = '' if result == None else result
+
+  # Raise BadArgument Exception if population value is not valid
+  def cityQuery(self):
+    if self.isValidRange(self.__minValue, self.__maxValue):
+      self.__cursor.execute('select name, population from city where population > ? and population < ? order by population desc', \
+                            (self.__minValue, self.__maxValue,))
+    else:
+      raise BadArgument()
+      
+  def popQuery(self):
+    if self.currentCity.replace('_','A').isalpha():
+      self.__cursor.execute('select population from city where name = ?',\
+                            (self.__currentCity,))
+    else:
+      raise BadArgument()
+
+  # Close connection to database
+  def closeConnection(self):
+    self.__cursor.close()
+
+  # Return result(s) (str)
+  def __str__(self):
+    
+    ansResults = ''
+    
+    for position in range(len(self.__answer)):
+      ansHeader = "City:".rjust(20) + "Population:".rjust(15) + "\n"
+      ansResults += ("%20s %14s \n" %
+                     (str(self.__answer[position][0]), str(self.__answer[position][1])))
+      totalResults = ansHeader + ansResults
+
+    return "%s" % (totalResults if self.__answer else 'Nothing matches your inquiry \n')
+
+'''
+Find population of any city stored in world database
+Cities must contain only alphabetic characters with the exception of
+multi-word citis, which must be connected with '_' (no spaces allowed)
+'''
+
+def main():
+  query = QueryWorldDB('worldDB')
+
+  popMin = input("Enter the minimum population: \n" + \
+                 "Or press <ENTER> to exit: ")
+
+  # Allows user to get as many results as desired
+  
+  while popMin:
+
+    popMax = input("Enter the maximum population: ")
+
+    # Set up and issue query
+    try:
+      query.setPops(popMin.strip(), popMax.strip())
+      query.cityQuery()
+      query.setAnswer()
+      print(query)
+
+    # Population input empty or malformed
+    except BadArgument as err:
+      print('\n%s: %s\n' % (err.getTitle(), str(err) ))
+
+    # Allows user to enter a different population with a continuation read
+    popMin = input("Enter the minimum population: \n" + \
+                 "Or press <ENTER> to exit: ")
+
+  query.closeConnection()
+
+main()
