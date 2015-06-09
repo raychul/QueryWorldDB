@@ -1,0 +1,67 @@
+>>> 
+Enter the minimum population: 
+Or press <ENTER> to exit: 50
+Enter the maximum population: 10
+
+Bad Argument: The population values you entered are invalid
+
+Enter the minimum population: 
+Or press <ENTER> to exit: 1000
+Enter the maximum population: 1500
+               City:    Population:
+        Longyearbyen           1438 
+        Monaco-Ville           1234 
+            Hamilton           1200 
+               Agaña           1139 
+            Mata-Utu           1137 
+
+Enter the minimum population: 
+Or press <ENTER> to exit: a
+Enter the maximum population: b
+
+Bad Argument: The population values you entered are invalid
+
+Enter the minimum population: 
+Or press <ENTER> to exit: 100a
+Enter the maximum population: x
+
+Bad Argument: The population values you entered are invalid
+
+Enter the minimum population: 
+Or press <ENTER> to exit: 500
+Enter the maximum population: 1000
+               City:    Population:
+          South_Hill            961 
+            Kingston            800 
+    Flying_Fish_Cove            700 
+               Alofi            682 
+          The_Valley            595 
+               Yaren            559 
+              Bantam            503 
+
+Enter the minimum population: 
+Or press <ENTER> to exit: 70
+Enter the maximum population: 2000
+               City:    Population:
+        Saint_George           1800 
+             Stanley           1636 
+           Jamestown           1500 
+        Longyearbyen           1438 
+        Monaco-Ville           1234 
+            Hamilton           1200 
+               Agaña           1139 
+            Mata-Utu           1137 
+          South_Hill            961 
+            Kingston            800 
+    Flying_Fish_Cove            700 
+               Alofi            682 
+          The_Valley            595 
+               Yaren            559 
+              Bantam            503 
+  Città_del_Vaticano            455 
+             Fakaofo            300 
+         West_Island            167 
+
+Enter the minimum population: 
+Or press <ENTER> to exit: 
+>>>
